@@ -1,4 +1,5 @@
 import board, pieces, ai
+import random
 
 # Returns a move object based on the users input. Does not check if the move is valid.
 def get_user_move():
@@ -64,7 +65,14 @@ def letter_to_xpos(letter):
 def updateSquare():
     #Update one of the black square
     #Update one of the white square
-    pass
+
+    redX = random.randint(0,7)
+    redY = random.randint(0,7)
+
+    blueX = random.randint(0,7)
+    blueY = random.randint(0,7)
+
+    #color the expected numbers
 
 #
 # Entry point.

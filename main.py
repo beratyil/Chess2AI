@@ -60,13 +60,27 @@ def letter_to_xpos(letter):
 
     raise ValueError("Invalid letter.")
 
+
+def updateSquare():
+    #Update one of the black square
+    #Update one of the white square
+    pass
+
 #
 # Entry point.
 #
 board = board.Board.new()
 print(board.to_string())
 
+turnNumber = 0
+
 while True:
+
+    turnNumber += 1
+
+    if turnNumber % 5 == 0:
+        updateSquare()
+
     move = get_valid_user_move(board)
     if (move == 0):
         if (board.is_check(pieces.Piece.WHITE)):

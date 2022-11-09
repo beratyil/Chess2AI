@@ -7,17 +7,12 @@ Uses the Alpha-Beta algorithm to search for the best move.
 <img src="./preview.png" width="200" alt="Python Chess AI Program">
 
 ## Getting started
-Download the repository and install the numpy dependency:
-```
-git clone git@github.com:Dirk94/ChessAI.git
-cd ChessAI
-pip3 install numpy
-```
+Chess-2
 
-Run the program and start playing chess! ♟️
-```
-python3 main.py
-```
+In every five rounds, a black and a white squares turns into red and blue in random order.
+
+Blue square gives advantages to white
+Red square gives advantages to black
 
 ### Example Moves
 Moves should have the following format:

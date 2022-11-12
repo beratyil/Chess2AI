@@ -22,6 +22,8 @@ class Board:
 
     @classmethod
     def new(cls):
+        # @note: chess_pieces double array
+        # @note: [i][j] => j=0 black, j=N white. || i = 0 left, i=N right
         chess_pieces = [[0 for x in range(Board.WIDTH)] for y in range(Board.HEIGHT)]
         # Create pawns.
         for x in range(Board.WIDTH):

@@ -82,6 +82,13 @@ print(board.to_string())
 
 turnNumber = 0
 
+#TODO: Take Color As Input
+# color = input("Your Color: ")
+color = 'W'
+
+userColor = pieces.Piece.BLACK if color == 'B'  else pieces.Piece.WHITE
+rivalColor = pieces.Piece.BLACK if userColor != pieces.Piece.BLACK else pieces.Piece.WHITE
+
 while True:
 
     turnNumber += 1
@@ -91,7 +98,7 @@ while True:
 
     move = get_valid_user_move(board)
     if (move == 0):
-        if (board.is_check(pieces.Piece.WHITE)):
+        if (board.is_check(userColor)):
             print("Checkmate. Black Wins.")
             break
         else:
@@ -105,7 +112,7 @@ while True:
 
     ai_move = ai.AI.get_ai_move(board, [])
     if (ai_move == 0):
-        if (board.is_check(pieces.Piece.BLACK)):
+        if (board.is_check(rivalColor)):
             print("Checkmate. White wins.")
             break
         else:

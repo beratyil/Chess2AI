@@ -59,9 +59,101 @@ class Heuristics:
         [-20, -10, -10, -5, -5, -10, -10, -20]
     ])
 
+    def pawnStructure(board, currentColor):
+        # if there is more than one pawn => -1, if there are more than two pawn => -2
+        
+        totalScore = 0
+        
+        myScore = 0
+        rivalScore = 0
+
+        chesspieces = board.chesspiece
+
+        myPawnScore = 0
+
+        myRookPosition = 0
+        rivalRookPosition = 0
+
+        myPawnPromotion = 0
+        rivalPawnPromotion = 0
+
+        isMyKnightEdge = 0
+        isRivalKnightEdge = 0
+
+        for x in range(8):
+            myPawnCntColumn = 0
+            rivalPawnCntColumn = 0
+            
+            for y in range(8):
+                piece = chesspieces[x][y]
+                
+                # 1) Material Score
+                if (piece != 0):
+                    if (piece.color == currentColor):
+                        myScore += piece.value
+                    else:
+                        rivalScore += piece.value
+                
+                # 2) Pawn Structure
+                if (piece == pieces.Pawn):
+                    
+                    # Multiple Pawns in Same Column
+                    if (piece.color == currentColor):
+                        myPawnCntColumn -= 1
+                    else:
+                        rivalPawnCntColumn += 1
+                    
+                    # Is Pawn Isolated
+
+                    # How Close a Pawn to Prometing
+                    if(piece.color == currentColor):
+                        myPawnPromotion = 0
+                    else:
+                        rivalPawnPromotion = 0
+
+                # 3) Knight
+                if(piece == pieces.Knight):
+                    
+                    # Is Knight At Edges
+                    if(piece.color == currentColor):
+                        if(y == 7 or y == 0):
+                            isMyKnightEdge -= 2
+                        elif(y == 6 or y == 0):
+                            isMyKnightEdge -= 1
+                    else:
+                        if(y == 7 or y == 0):
+                            isRivalKnightEdge += 2
+                        elif(y == 6 or y == 0):
+                            isRivalKnightEdge += 1
+
+                if(piece == pieces.Rook):
+                    if(piece.color == currentColor):
+
+                        if y == 0 or y == 7:
+                            myRookPosition -= 1
+                    
+                    else:
+
+                        if y == 0 or y == 7:
+                            myRookPosition += 1
+
+
+                        
+
+            if myPawnCntColumn < -1:
+                myScore += myPawnCntColumn
+            if rivalPawnCntColumn > 1:
+                myScore -= rivalPawnCntColumn
+
     @staticmethod
-    def evaluate(board):
+    def evaluate(board, currentColor):
         material = Heuristics.get_material_score(board)
+
+        #TODO: delete the functions below, instead write functions for
+        # *Material Score (already written)
+        # *Pawn Structure
+        # *Total Square controlled
+        # *Direction of Pieces
 
         pawns = Heuristics.get_piece_position_score(board, pieces.Pawn.PIECE_TYPE, Heuristics.PAWN_TABLE)
         knights = Heuristics.get_piece_position_score(board, pieces.Knight.PIECE_TYPE, Heuristics.KNIGHT_TABLE)
@@ -177,7 +269,7 @@ class AI:
     @staticmethod
     def alphabeta(chessboard, depth, a, b, maximizing, currentColor):
         if (depth == 0):
-            return Heuristics.evaluate(chessboard)
+            return Heuristics.evaluate(chessboard, currentColor)
 
         currentColorFlipped = pieces.Piece.flipColor(currentColor)
 

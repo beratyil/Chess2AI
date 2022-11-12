@@ -59,7 +59,7 @@ class Heuristics:
         [-20, -10, -10, -5, -5, -10, -10, -20]
     ])
 
-    def pawnStructure(board, currentColor):
+    def newEvaluationFunction(board, currentColor):
         # if there is more than one pawn => -1, if there are more than two pawn => -2
         
         totalScore = 0
@@ -136,9 +136,6 @@ class Heuristics:
 
                         if y == 0 or y == 7:
                             myRookPosition += 1
-
-
-                        
 
             if myPawnCntColumn < -1:
                 myScore += myPawnCntColumn

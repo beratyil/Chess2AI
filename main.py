@@ -18,11 +18,11 @@ def get_user_move():
         return get_user_move()
 
 # Returns a valid move based on the users input.
-def get_valid_user_move(board):
+def get_valid_user_move(board, userColor):
     while True:
         move = get_user_move()
         valid = False
-        possible_moves = board.get_possible_moves(pieces.Piece.WHITE)
+        possible_moves = board.get_possible_moves(userColor)
         # No possible moves
         if (not possible_moves):
             return 0
@@ -84,10 +84,10 @@ turnNumber = 0
 
 #TODO: Take Color As Input
 # color = input("Your Color: ")
-color = 'W'
+color = pieces.Piece.WHITE
 
-userColor = pieces.Piece.BLACK if color == 'B'  else pieces.Piece.WHITE
-rivalColor = pieces.Piece.BLACK if userColor != pieces.Piece.BLACK else pieces.Piece.WHITE
+userColor = color
+botColor = pieces.Piece.flipColor(userColor)
 
 while True:
 
@@ -96,7 +96,7 @@ while True:
     if turnNumber % 5 == 0:
         updateSquare()
 
-    move = get_valid_user_move(board)
+    move = get_valid_user_move(board, userColor)
     if (move == 0):
         if (board.is_check(userColor)):
             print("Checkmate. Black Wins.")
@@ -110,9 +110,9 @@ while True:
     print("User move: " + move.to_string())
     print(board.to_string())
 
-    ai_move = ai.AI.get_ai_move(board, [])
+    ai_move = ai.AI.get_ai_move(board, [], botColor)
     if (ai_move == 0):
-        if (board.is_check(rivalColor)):
+        if (board.is_check(botColor)):
             print("Checkmate. White wins.")
             break
         else:

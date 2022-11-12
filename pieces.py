@@ -5,6 +5,10 @@ class Piece():
     WHITE = "W"
     BLACK = "B"
 
+    @staticmethod
+    def flipColor(currentColor):
+        return Piece.BLACK if currentColor == 'W'  else Piece.WHITE
+
     def __init__(self, x, y, color, piece_type, value):
         self.x = x
         self.y = y

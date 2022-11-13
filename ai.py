@@ -83,6 +83,9 @@ class Heuristics:
         for x in range(8):
             myPawnCntColumn = 0
             rivalPawnCntColumn = 0
+
+            myRookCntColumn = 0
+            rivalRookCntColumn = 0
             
             for y in range(8):
                 piece = chesspieces[x][y]
@@ -123,7 +126,9 @@ class Heuristics:
                             if y == 0 or y == 7 or x == 0 or x == 7:
                                 myScore -= 1
 
+
                             #TODO: Is Multiple Rook at Same Column
+                            myRookCntColumn += 1
 
                             #TODO: Rook at Open Files or Semi-Open Files
                     
@@ -143,6 +148,12 @@ class Heuristics:
                 myScore += myPawnCntColumn
             if rivalPawnCntColumn > 1:
                 rivalScore += rivalPawnCntColumn
+
+            # if two rooks in the same column
+            if myRookCntColumn > 1:
+                rivalScore += myRookCntColumn
+            if rivalRookCntColumn > 1:
+                myScore += rivalRookCntColumn
 
 
         return myScore - rivalScore

@@ -88,69 +88,68 @@ class Heuristics:
                 piece = chesspieces[x][y]
                 
                 # 1) Material Score
-                if (piece != 0):
-                    if (piece.color == currentColor):
+                if piece != 0:
+
+                    if piece.color == currentColor:
                         myScore += piece.value
+
+                        if piece == pieces.Pawn:
+                            # Multiple Pawns in Same Column
+                            myPawnCntColumn -= 1
+
+                            # Is Pawn in Middle
+                            if (x == 4 or y == 4) or (x == 4 or y == 5) or (x == 5 or y == 4) or (x == 5 or y == 5):
+                                myScore += 0.5
+
+                            #TODO: Is Pawn Isolated
+                            
+                            #TODO:  Weakness of pawns near king
+
+                            #TODO: How Close a Pawn to Promoting (Is there any piece in front)
+                            if piece.color == pieces.Piece.BLACK and y > 5:
+                                myScore += (y/7)
+                        
+                        
+                        if(piece == pieces.Knight):
+                
+                            # Is Knight At Edges
+                            if(y == 7 or y == 0 or x == 7 or x == 0):
+                                myScore -= 2
+                            elif(y == 6 or y == 1 or x == 6 or x == 1):
+                                myScore -= 1
+
+                        if(piece == pieces.Rook):
+                            # Is Rook At Edges
+                            if y == 0 or y == 7 or x == 0 or x == 7:
+                                myScore -= 1
+
+                            #TODO: Is Multiple Rook at Same Column
+
+                            #TODO: Rook at Open Files or Semi-Open Files
+                    
                     else:
                         rivalScore += piece.value
-                
-                # 2) Pawn Structure
-                if (piece == pieces.Pawn):
-                    
-                    # Multiple Pawns in Same Column
-                    if (piece.color == currentColor):
-                        myPawnCntColumn -= 1
-                    else:
-                        rivalPawnCntColumn += 1
-                    
-                    # Is Pawn Isolated
 
-                    # How Close a Pawn to Prometing
-                    if(piece.color == currentColor):
-                        myPawnPromotion = 0
-                    else:
-                        rivalPawnPromotion = 0
+                        if piece == pieces.Pawn:
+                            # Multiple Pawns in Same Column
+                            rivalPawnCntColumn -= 1
 
-                # 3) Knight
-                if(piece == pieces.Knight):
-                    
-                    # Is Knight At Edges
-                    if(piece.color == currentColor):
-                        if(y == 7 or y == 0):
-                            isMyKnightEdge -= 2
-                        elif(y == 6 or y == 0):
-                            isMyKnightEdge -= 1
-                    else:
-                        if(y == 7 or y == 0):
-                            isRivalKnightEdge += 2
-                        elif(y == 6 or y == 0):
-                            isRivalKnightEdge += 1
+                            # Is Pawn in Middle
+                            if (x == 4 or y == 4) or (x == 4 or y == 5) or (x == 5 or y == 4) or (x == 5 or y == 5):
+                                rivalScore += 0.5
 
-                if(piece == pieces.Rook):
-                    if(piece.color == currentColor):
-
-                        if y == 0 or y == 7:
-                            myRookPosition -= 1
-                    
-                    else:
-
-                        if y == 0 or y == 7:
-                            myRookPosition += 1
-
+            # if multiple pawn in the same column 
             if myPawnCntColumn < -1:
                 myScore += myPawnCntColumn
             if rivalPawnCntColumn > 1:
-                myScore -= rivalPawnCntColumn
+                rivalScore += rivalPawnCntColumn
+
+
+        return myScore - rivalScore
 
     @staticmethod
     def evaluate(board, currentColor):
         material = Heuristics.get_material_score(board)
-
-        #TODO: delete the functions below, instead write functions for
-        # *Material Score (already written)
-        # *Pawn Structure
-        # *Total Square controlled
-        # *Direction of Pieces
 
         pawns = Heuristics.get_piece_position_score(board, pieces.Pawn.PIECE_TYPE, Heuristics.PAWN_TABLE)
         knights = Heuristics.get_piece_position_score(board, pieces.Knight.PIECE_TYPE, Heuristics.KNIGHT_TABLE)

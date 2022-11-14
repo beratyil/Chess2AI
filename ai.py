@@ -61,24 +61,10 @@ class Heuristics:
 
     def newEvaluationFunction(board, currentColor):
         # if there is more than one pawn => -1, if there are more than two pawn => -2
-        
-        totalScore = 0
-        
         myScore = 0
         rivalScore = 0
 
         chesspieces = board.chesspiece
-
-        myPawnScore = 0
-
-        myRookPosition = 0
-        rivalRookPosition = 0
-
-        myPawnPromotion = 0
-        rivalPawnPromotion = 0
-
-        isMyKnightEdge = 0
-        isRivalKnightEdge = 0
 
         for x in range(8):
             myPawnCntColumn = 0
@@ -125,7 +111,6 @@ class Heuristics:
                             # Is Rook At Edges
                             if y == 0 or y == 7 or x == 0 or x == 7:
                                 myScore -= 1
-
 
                             #TODO: Is Multiple Rook at Same Column
                             myRookCntColumn += 1

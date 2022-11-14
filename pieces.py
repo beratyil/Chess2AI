@@ -16,8 +16,6 @@ class Piece():
         self.piece_type = piece_type
         self.value = value
 
-
-
     # Returns all diagonal moves for this piece. This should therefore only
     # be used by the Bishop and Queen since they are the only pieces that can
     # move diagonally.

@@ -1,52 +1,130 @@
 import pieces, ai
-
+import copy
+import ujson
 class Board:
 
     WIDTH = 8
     HEIGHT = 8
 
-    def __init__(self, chesspieces, white_king_moved, black_king_moved):
+    def __init__(self, chesspieces, white_king_moved, black_king_moved, whitePieces, blackPieces):
         self.chesspieces = chesspieces
         self.white_king_moved = white_king_moved
         self.black_king_moved = black_king_moved
+        self.whitePieces = whitePieces
+        self.blackPieces = blackPieces
 
     @classmethod
     def clone(cls, chessboard):
         chesspieces = [[0 for x in range(Board.WIDTH)] for y in range(Board.HEIGHT)]
+        whitePieces = {
+            "Pawn": [],
+            "Knight": [],
+            "Bishop": [],
+            "Rook": [],
+            "Queen": [],
+            "King": [],
+        }
+        blackPieces = {
+            "Pawn": [],
+            "Knight": [],
+            "Bishop": [],
+            "Rook": [],
+            "Queen": [],
+            "King": [],
+        }
         for x in range(Board.WIDTH):
             for y in range(Board.HEIGHT):
                 piece = chessboard.chesspieces[x][y]
                 if (piece != 0):
                     chesspieces[x][y] = piece.clone()
-        return cls(chesspieces, chessboard.white_king_moved, chessboard.black_king_moved)
+                    
+                    pieceRef = None
+
+                    if piece.color == pieces.Piece.WHITE:
+                        pieceRef = whitePieces
+                    else:
+                        pieceRef = blackPieces
+                    
+                    if piece.piece_type == "P":
+                        temp = pieceRef["Pawn"]
+                        temp.append(chesspieces[x][y])
+                    elif piece.piece_type == "B":
+                        pieceRef["Bishop"] = chesspieces[x][y]
+                    elif piece.piece_type == "K":
+                        pieceRef["Knight"] = chesspieces[x][y]
+                    elif piece.piece_type == "R":
+                        temp = pieceRef["Rook"]
+                        temp.append(chesspieces[x][y])
+                    elif piece.piece_type == "Q":
+                        pieceRef["Queen"] = chesspieces[x][y]
+                    elif piece.piece_type == "K":
+                        pieceRef["King"] = chesspieces[x][y]
+
+        return cls(chesspieces, chessboard.white_king_moved, chessboard.black_king_moved, whitePieces, blackPieces)
 
     @classmethod
     def new(cls):
         # @note: chess_pieces double array
         # @note: [i][j] => j=0 black, j=N white. || i = 0 left, i=N right
         chess_pieces = [[0 for x in range(Board.WIDTH)] for y in range(Board.HEIGHT)]
+        whitePieces = {}
+        blackPieces = {}
+        
         # Create pawns.
+        pawnArrayWhite = []
+        pawnArrayBlack = []
+
         for x in range(Board.WIDTH):
             chess_pieces[x][Board.HEIGHT-2] = pieces.Pawn(x, Board.HEIGHT-2, pieces.Piece.WHITE)
             chess_pieces[x][1] = pieces.Pawn(x, 1, pieces.Piece.BLACK)
+            
+            pawnArrayWhite.append(chess_pieces[x][Board.HEIGHT-2])
+            pawnArrayBlack.append(chess_pieces[x][1])
+        
+        whitePieces['Pawn'] = pawnArrayWhite
+        blackPieces['Pawn'] = pawnArrayBlack
 
         # Create rooks.
-        chess_pieces[0][Board.HEIGHT-1] = pieces.Rook(0, Board.HEIGHT-1, pieces.Piece.WHITE)
-        chess_pieces[Board.WIDTH-1][Board.HEIGHT-1] = pieces.Rook(Board.WIDTH-1, Board.HEIGHT-1, pieces.Piece.WHITE)
-        chess_pieces[0][0] = pieces.Rook(0, 0, pieces.Piece.BLACK)
-        chess_pieces[Board.WIDTH-1][0] = pieces.Rook(Board.WIDTH-1, 0, pieces.Piece.BLACK)
+        rookWhite1 = pieces.Rook(0, Board.HEIGHT-1, pieces.Piece.WHITE)
+        rookWhite2 = pieces.Rook(Board.WIDTH-1, Board.HEIGHT-1, pieces.Piece.WHITE)
+        rookBlack1 = pieces.Rook(0, 0, pieces.Piece.BLACK)
+        rookBlack2 = pieces.Rook(Board.WIDTH-1, 0, pieces.Piece.BLACK)
+        
+        chess_pieces[0][Board.HEIGHT-1] = rookWhite1
+        chess_pieces[Board.WIDTH-1][Board.HEIGHT-1] = rookWhite2
+        chess_pieces[0][0] = rookBlack1
+        chess_pieces[Board.WIDTH-1][0] = rookBlack2
+
+        whitePieces['Rook'] = [rookWhite1, rookWhite2]
+        blackPieces['Rook'] = [rookBlack1, rookBlack2]
 
         # Create Knights.
-        chess_pieces[1][Board.HEIGHT-1] = pieces.Knight(1, Board.HEIGHT-1, pieces.Piece.WHITE)
-        chess_pieces[Board.WIDTH-2][Board.HEIGHT-1] = pieces.Knight(Board.WIDTH-2, Board.HEIGHT-1, pieces.Piece.WHITE)
-        chess_pieces[1][0] = pieces.Knight(1, 0, pieces.Piece.BLACK)
-        chess_pieces[Board.WIDTH-2][0] = pieces.Knight(Board.WIDTH-2, 0, pieces.Piece.BLACK)
+        knightWhite1 = pieces.Knight(1, Board.HEIGHT-1, pieces.Piece.WHITE)
+        knightWhite2 = pieces.Knight(Board.WIDTH-2, Board.HEIGHT-1, pieces.Piece.WHITE)
+        knightBlack1 = pieces.Knight(1, 0, pieces.Piece.BLACK)
+        knightBlack2 = pieces.Knight(Board.WIDTH-2, 0, pieces.Piece.BLACK)
+
+        chess_pieces[1][Board.HEIGHT-1] = knightWhite1
+        chess_pieces[Board.WIDTH-2][Board.HEIGHT-1] = knightWhite2
+        chess_pieces[1][0] = knightBlack1
+        chess_pieces[Board.WIDTH-2][0] = knightBlack2
+
+        whitePieces['Knight'] = [knightWhite1, knightWhite2]
+        blackPieces['Knight'] = [knightBlack1, knightBlack2]
 
         # Create Bishops.
-        chess_pieces[2][Board.HEIGHT-1] = pieces.Bishop(2, Board.HEIGHT-1, pieces.Piece.WHITE)
-        chess_pieces[Board.WIDTH-3][Board.HEIGHT-1] = pieces.Bishop(Board.WIDTH-3, Board.HEIGHT-1, pieces.Piece.WHITE)
-        chess_pieces[2][0] = pieces.Bishop(2, 0, pieces.Piece.BLACK)
-        chess_pieces[Board.WIDTH-3][0] = pieces.Bishop(Board.WIDTH-3, 0, pieces.Piece.BLACK)
+        bishopWhite1 = pieces.Bishop(2, Board.HEIGHT-1, pieces.Piece.WHITE)
+        bishopWhite2 = pieces.Bishop(Board.WIDTH-3, Board.HEIGHT-1, pieces.Piece.WHITE)
+        bishopBlack1 = pieces.Bishop(2, 0, pieces.Piece.BLACK)
+        bishopBlack2 = pieces.Bishop(Board.WIDTH-3, 0, pieces.Piece.BLACK)
+
+        chess_pieces[2][Board.HEIGHT-1] = bishopWhite1
+        chess_pieces[Board.WIDTH-3][Board.HEIGHT-1] = bishopWhite2
+        chess_pieces[2][0] = bishopBlack1
+        chess_pieces[Board.WIDTH-3][0] = bishopBlack2
+
+        whitePieces['Bishop'] = [bishopWhite1, bishopWhite2]
+        blackPieces['Bishop'] = [bishopBlack1, bishopBlack2]
 
         # Create King & Queen.
         chess_pieces[4][Board.HEIGHT-1] = pieces.King(4, Board.HEIGHT-1, pieces.Piece.WHITE)
@@ -54,7 +132,13 @@ class Board:
         chess_pieces[4][0] = pieces.King(4, 0, pieces.Piece.BLACK)
         chess_pieces[3][0] = pieces.Queen(3, 0, pieces.Piece.BLACK)
 
-        return cls(chess_pieces, False, False)
+        whitePieces['Queen'] = chess_pieces[3][Board.HEIGHT-1]
+        blackPieces['Queen'] = chess_pieces[3][0]
+
+        whitePieces['King'] = chess_pieces[4][Board.HEIGHT-1]
+        blackPieces['King'] = chess_pieces[3][0]
+
+        return cls(chess_pieces, False, False, whitePieces, blackPieces)
 
     def get_possible_moves(self, color):
         moves = []

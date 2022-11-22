@@ -17,20 +17,20 @@ class Board:
     def clone(cls, chessboard):
         chesspieces = [[0 for x in range(Board.WIDTH)] for y in range(Board.HEIGHT)]
         whitePieces = {
-            "Pawn": [],
-            "Knight": [],
-            "Bishop": [],
-            "Rook": [],
-            "Queen": [],
-            "King": [],
+            "P": [],
+            "K": [],
+            "B": [],
+            "R": [],
+            "Q": [],
+            "K": [],
         }
         blackPieces = {
-            "Pawn": [],
-            "Knight": [],
-            "Bishop": [],
-            "Rook": [],
-            "Queen": [],
-            "King": [],
+            "P": [],
+            "K": [],
+            "B": [],
+            "R": [],
+            "Q": [],
+            "K": [],
         }
         for x in range(Board.WIDTH):
             for y in range(Board.HEIGHT):
@@ -46,19 +46,19 @@ class Board:
                         pieceRef = blackPieces
                     
                     if piece.piece_type == "P":
-                        temp = pieceRef["Pawn"]
+                        temp = pieceRef["P"]
                         temp.append(chesspieces[x][y])
                     elif piece.piece_type == "B":
-                        pieceRef["Bishop"] = chesspieces[x][y]
+                        pieceRef["B"] = chesspieces[x][y]
                     elif piece.piece_type == "K":
-                        pieceRef["Knight"] = chesspieces[x][y]
+                        pieceRef["K"] = chesspieces[x][y]
                     elif piece.piece_type == "R":
-                        temp = pieceRef["Rook"]
+                        temp = pieceRef["R"]
                         temp.append(chesspieces[x][y])
                     elif piece.piece_type == "Q":
-                        pieceRef["Queen"] = chesspieces[x][y]
+                        pieceRef["Q"] = chesspieces[x][y]
                     elif piece.piece_type == "K":
-                        pieceRef["King"] = chesspieces[x][y]
+                        pieceRef["K"] = chesspieces[x][y]
 
         return cls(chesspieces, chessboard.white_king_moved, chessboard.black_king_moved, whitePieces, blackPieces)
 
@@ -81,8 +81,8 @@ class Board:
             pawnArrayWhite.append(chess_pieces[x][Board.HEIGHT-2])
             pawnArrayBlack.append(chess_pieces[x][1])
         
-        whitePieces['Pawn'] = pawnArrayWhite
-        blackPieces['Pawn'] = pawnArrayBlack
+        whitePieces['P'] = pawnArrayWhite
+        blackPieces['P'] = pawnArrayBlack
 
         # Create rooks.
         rookWhite1 = pieces.Rook(0, Board.HEIGHT-1, pieces.Piece.WHITE)
@@ -95,8 +95,8 @@ class Board:
         chess_pieces[0][0] = rookBlack1
         chess_pieces[Board.WIDTH-1][0] = rookBlack2
 
-        whitePieces['Rook'] = [rookWhite1, rookWhite2]
-        blackPieces['Rook'] = [rookBlack1, rookBlack2]
+        whitePieces['R'] = [rookWhite1, rookWhite2]
+        blackPieces['R'] = [rookBlack1, rookBlack2]
 
         # Create Knights.
         knightWhite1 = pieces.Knight(1, Board.HEIGHT-1, pieces.Piece.WHITE)
@@ -109,8 +109,8 @@ class Board:
         chess_pieces[1][0] = knightBlack1
         chess_pieces[Board.WIDTH-2][0] = knightBlack2
 
-        whitePieces['Knight'] = [knightWhite1, knightWhite2]
-        blackPieces['Knight'] = [knightBlack1, knightBlack2]
+        whitePieces['K'] = [knightWhite1, knightWhite2]
+        blackPieces['K'] = [knightBlack1, knightBlack2]
 
         # Create Bishops.
         bishopWhite1 = pieces.Bishop(2, Board.HEIGHT-1, pieces.Piece.WHITE)
@@ -123,8 +123,8 @@ class Board:
         chess_pieces[2][0] = bishopBlack1
         chess_pieces[Board.WIDTH-3][0] = bishopBlack2
 
-        whitePieces['Bishop'] = [bishopWhite1, bishopWhite2]
-        blackPieces['Bishop'] = [bishopBlack1, bishopBlack2]
+        whitePieces['B'] = [bishopWhite1, bishopWhite2]
+        blackPieces['B'] = [bishopBlack1, bishopBlack2]
 
         # Create King & Queen.
         chess_pieces[4][Board.HEIGHT-1] = pieces.King(4, Board.HEIGHT-1, pieces.Piece.WHITE)
@@ -132,11 +132,11 @@ class Board:
         chess_pieces[4][0] = pieces.King(4, 0, pieces.Piece.BLACK)
         chess_pieces[3][0] = pieces.Queen(3, 0, pieces.Piece.BLACK)
 
-        whitePieces['Queen'] = chess_pieces[3][Board.HEIGHT-1]
-        blackPieces['Queen'] = chess_pieces[3][0]
+        whitePieces['Q'] = chess_pieces[3][Board.HEIGHT-1]
+        blackPieces['Q'] = chess_pieces[3][0]
 
-        whitePieces['King'] = chess_pieces[4][Board.HEIGHT-1]
-        blackPieces['King'] = chess_pieces[3][0]
+        whitePieces['K'] = chess_pieces[4][Board.HEIGHT-1]
+        blackPieces['K'] = chess_pieces[3][0]
 
         return cls(chess_pieces, False, False, whitePieces, blackPieces)
 
@@ -155,8 +155,30 @@ class Board:
         piece = self.chesspieces[move.xfrom][move.yfrom]
         piece.x = move.xto
         piece.y = move.yto
-        self.chesspieces[move.xto][move.yto] = piece
         self.chesspieces[move.xfrom][move.yfrom] = 0
+        enemy = self.chesspieces[move.xto][move.yto]
+
+        self.chesspieces[move.xto][move.yto] = piece
+
+        if enemy == 0:
+            pass
+        else:
+            pieceColor = ''
+
+            if enemy.color == pieces.Piece.BLACK:
+                pieceColor = self.blackPieces
+            else:
+                pieceColor = self.whitePieces
+                
+            enemytype = enemy.piece_type
+            
+            allpiece = pieceColor[enemytype]
+            
+            index = allpiece.index(enemy)
+
+            allpiece[index] = 0
+
+            del enemy
 
         if (piece.piece_type == pieces.Pawn.PIECE_TYPE):
             if (piece.y == 0 or piece.y == Board.HEIGHT-1):

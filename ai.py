@@ -1,147 +1,148 @@
-import board, pieces, numpy
+import numpy
+
+import board
+import pieces
+
 
 class Heuristics:
-
     # The tables denote the points scored for the position of the chess pieces on the board.
 
     PAWN_TABLE = numpy.array([
-        [ 0,  0,  0,  0,  0,  0,  0,  0],
-        [ 5, 10, 10,-20,-20, 10, 10,  5],
-        [ 5, -5,-10,  0,  0,-10, -5,  5],
-        [ 0,  0,  0, 20, 20,  0,  0,  0],
-        [ 5,  5, 10, 25, 25, 10,  5,  5],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [5, 10, 10, -20, -20, 10, 10, 5],
+        [5, -5, -10, 0, 0, -10, -5, 5],
+        [0, 0, 0, 20, 20, 0, 0, 0],
+        [5, 5, 10, 25, 25, 10, 5, 5],
         [10, 10, 20, 30, 30, 20, 10, 10],
         [50, 50, 50, 50, 50, 50, 50, 50],
-        [ 0,  0,  0,  0,  0,  0,  0,  0]
+        [0, 0, 0, 0, 0, 0, 0, 0]
     ])
 
     KNIGHT_TABLE = numpy.array([
         [-50, -40, -30, -30, -30, -30, -40, -50],
-        [-40, -20,   0,   5,   5,   0, -20, -40],
-        [-30,   5,  10,  15,  15,  10,   5, -30],
-        [-30,   0,  15,  20,  20,  15,   0, -30],
-        [-30,   5,  15,  20,  20,  15,   0, -30],
-        [-30,   0,  10,  15,  15,  10,   0, -30],
-        [-40, -20,   0,   0,   0,   0, -20, -40],
+        [-40, -20, 0, 5, 5, 0, -20, -40],
+        [-30, 5, 10, 15, 15, 10, 5, -30],
+        [-30, 0, 15, 20, 20, 15, 0, -30],
+        [-30, 5, 15, 20, 20, 15, 0, -30],
+        [-30, 0, 10, 15, 15, 10, 0, -30],
+        [-40, -20, 0, 0, 0, 0, -20, -40],
         [-50, -40, -30, -30, -30, -30, -40, -50]
     ])
 
     BISHOP_TABLE = numpy.array([
         [-20, -10, -10, -10, -10, -10, -10, -20],
-        [-10,   5,   0,   0,   0,   0,   5, -10],
-        [-10,  10,  10,  10,  10,  10,  10, -10],
-        [-10,   0,  10,  10,  10,  10,   0, -10],
-        [-10,   5,   5,  10,  10,   5,   5, -10],
-        [-10,   0,   5,  10,  10,   5,   0, -10],
-        [-10,   0,   0,   0,   0,   0,   0, -10],
+        [-10, 5, 0, 0, 0, 0, 5, -10],
+        [-10, 10, 10, 10, 10, 10, 10, -10],
+        [-10, 0, 10, 10, 10, 10, 0, -10],
+        [-10, 5, 5, 10, 10, 5, 5, -10],
+        [-10, 0, 5, 10, 10, 5, 0, -10],
+        [-10, 0, 0, 0, 0, 0, 0, -10],
         [-20, -10, -10, -10, -10, -10, -10, -20]
     ])
 
     ROOK_TABLE = numpy.array([
-        [ 0,  0,  0,  5,  5,  0,  0,  0],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [ 5, 10, 10, 10, 10, 10, 10,  5],
-        [ 0,  0,  0,  0,  0,  0,  0,  0]
+        [0, 0, 0, 5, 5, 0, 0, 0],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [5, 10, 10, 10, 10, 10, 10, 5],
+        [0, 0, 0, 0, 0, 0, 0, 0]
     ])
 
     QUEEN_TABLE = numpy.array([
         [-20, -10, -10, -5, -5, -10, -10, -20],
-        [-10,   0,   5,  0,  0,   0,   0, -10],
-        [-10,   5,   5,  5,  5,   5,   0, -10],
-        [  0,   0,   5,  5,  5,   5,   0,  -5],
-        [ -5,   0,   5,  5,  5,   5,   0,  -5],
-        [-10,   0,   5,  5,  5,   5,   0, -10],
-        [-10,   0,   0,  0,  0,   0,   0, -10],
+        [-10, 0, 5, 0, 0, 0, 0, -10],
+        [-10, 5, 5, 5, 5, 5, 0, -10],
+        [0, 0, 5, 5, 5, 5, 0, -5],
+        [-5, 0, 5, 5, 5, 5, 0, -5],
+        [-10, 0, 5, 5, 5, 5, 0, -10],
+        [-10, 0, 0, 0, 0, 0, 0, -10],
         [-20, -10, -10, -5, -5, -10, -10, -20]
     ])
 
-    def newEvaluationFunction(board, currentColor):
+    def new_evaluation_function(board, currentColor):
         # if there is more than one pawn => -1, if there are more than two pawn => -2
-        myScore = 0
-        rivalScore = 0
+        my_score = 0
+        rival_score = 0
 
-        chesspieces = board.chesspiece
+        chess_pieces = board.chesspiece
 
         for x in range(8):
-            myPawnCntColumn = 0
-            rivalPawnCntColumn = 0
+            my_pawn_cnt_column = 0
+            rival_pawn_cnt_column = 0
 
-            myRookCntColumn = 0
-            rivalRookCntColumn = 0
-            
+            my_rook_cnt_column = 0
+            rival_rook_cnt_column = 0
+
             for y in range(8):
-                piece = chesspieces[x][y]
-                
+                piece = chess_pieces[x][y]
+
                 # 1) Material Score
                 if piece != 0:
 
                     if piece.color == currentColor:
-                        myScore += piece.value
+                        my_score += piece.value
 
                         if piece == pieces.Pawn:
                             # Multiple Pawns in Same Column
-                            myPawnCntColumn -= 1
+                            my_pawn_cnt_column -= 1
 
                             # Is Pawn in Middle
                             if (x == 4 or y == 4) or (x == 4 or y == 5) or (x == 5 or y == 4) or (x == 5 or y == 5):
-                                myScore += 0.5
+                                my_score += 0.5
 
-                            #TODO: Is Pawn Isolated
-                            
-                            #TODO:  Weakness of pawns near king
+                            # TODO: Is Pawn Isolated
 
-                            #TODO: How Close a Pawn to Promoting (Is there any piece in front)
+                            # TODO:  Weakness of pawns near king
+
+                            # TODO: How Close a Pawn to Promoting (Is there any piece in front)
                             if piece.color == pieces.Piece.BLACK and y > 5:
-                                myScore += (y/7)
-                        
-                        
-                        if(piece == pieces.Knight):
-                
-                            # Is Knight At Edges
-                            if(y == 7 or y == 0 or x == 7 or x == 0):
-                                myScore -= 2
-                            elif(y == 6 or y == 1 or x == 6 or x == 1):
-                                myScore -= 1
+                                my_score += (y / 7)
 
-                        if(piece == pieces.Rook):
+                        if piece == pieces.Knight:
+
+                            # Is Knight At Edges
+                            if y == 7 or y == 0 or x == 7 or x == 0:
+                                my_score -= 2
+                            elif y == 6 or y == 1 or x == 6 or x == 1:
+                                my_score -= 1
+
+                        if piece == pieces.Rook:
                             # Is Rook At Edges
                             if y == 0 or y == 7 or x == 0 or x == 7:
-                                myScore -= 1
+                                my_score -= 1
 
-                            #TODO: Is Multiple Rook at Same Column
-                            myRookCntColumn += 1
+                            # TODO: Is Multiple Rook at Same Column
+                            my_rook_cnt_column += 1
 
-                            #TODO: Rook at Open Files or Semi-Open Files
-                    
+                            # TODO: Rook at Open Files or Semi-Open Files
+
                     else:
-                        rivalScore += piece.value
+                        rival_score += piece.value
 
                         if piece == pieces.Pawn:
                             # Multiple Pawns in Same Column
-                            rivalPawnCntColumn -= 1
+                            rival_pawn_cnt_column -= 1
 
                             # Is Pawn in Middle
                             if (x == 4 or y == 4) or (x == 4 or y == 5) or (x == 5 or y == 4) or (x == 5 or y == 5):
-                                rivalScore += 0.5
+                                rival_score += 0.5
 
             # if multiple pawn in the same column 
-            if myPawnCntColumn < -1:
-                myScore += myPawnCntColumn
-            if rivalPawnCntColumn > 1:
-                rivalScore += rivalPawnCntColumn
+            if my_pawn_cnt_column < -1:
+                my_score += my_pawn_cnt_column
+            if rival_pawn_cnt_column > 1:
+                rival_score += rival_pawn_cnt_column
 
             # if two rooks in the same column
-            if myRookCntColumn > 1:
-                rivalScore += myRookCntColumn
-            if rivalRookCntColumn > 1:
-                myScore += rivalRookCntColumn
+            if my_rook_cnt_column > 1:
+                rival_score += my_rook_cnt_column
+            if rival_rook_cnt_column > 1:
+                my_score += rival_rook_cnt_column
 
-
-        return myScore - rivalScore
+        return my_score - rival_score
 
     @staticmethod
     def evaluate(board, currentColor):
@@ -191,12 +192,11 @@ class Heuristics:
 
 
 class AI:
-
     INFINITE = 10000000
 
     @staticmethod
     def get_ai_move(chessboard, invalid_moves, botColor):
-        
+
         userColor = pieces.Piece.flipColor(botColor)
 
         best_move = 0
@@ -243,7 +243,7 @@ class AI:
                 copy = board.Board.clone(board)
                 copy.perform_move(move)
 
-                score = AI.minimax(copy, depth-1, False)
+                score = AI.minimax(copy, depth - 1, False)
                 best_score = max(best_score, score)
 
             return best_score
@@ -253,7 +253,7 @@ class AI:
                 copy = board.Board.clone(board)
                 copy.perform_move(move)
 
-                score = AI.minimax(copy, depth-1, True)
+                score = AI.minimax(copy, depth - 1, True)
                 best_score = min(best_score, score)
 
             return best_score
@@ -273,7 +273,7 @@ class AI:
                 copy = board.Board.clone(chessboard)
                 copy.perform_move(move)
 
-                best_score = max(best_score, AI.alphabeta(copy, depth-1, a, b, False, currentColorFlipped))
+                best_score = max(best_score, AI.alphabeta(copy, depth - 1, a, b, False, currentColorFlipped))
                 a = max(a, best_score)
                 if (b <= a):
                     break
@@ -283,11 +283,11 @@ class AI:
                 copy = board.Board.clone(chessboard)
                 copy.perform_move(move)
 
-                best_score = min(best_score, AI.alphabeta(copy, depth-1, a, b, True, currentColorFlipped))
+                best_score = min(best_score, AI.alphabeta(copy, depth - 1, a, b, True, currentColorFlipped))
                 b = min(b, best_score)
                 if (b <= a):
                     break
-            
+
         return best_score
 
 

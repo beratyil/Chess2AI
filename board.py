@@ -18,7 +18,7 @@ class Board:
         chesspieces = [[0 for x in range(Board.WIDTH)] for y in range(Board.HEIGHT)]
         whitePieces = {
             "P": [],
-            "K": [],
+            "N": [],
             "B": [],
             "R": [],
             "Q": [],
@@ -26,7 +26,7 @@ class Board:
         }
         blackPieces = {
             "P": [],
-            "K": [],
+            "N": [],
             "B": [],
             "R": [],
             "Q": [],
@@ -44,21 +44,8 @@ class Board:
                         pieceRef = whitePieces
                     else:
                         pieceRef = blackPieces
-                    
-                    if piece.piece_type == "P":
-                        temp = pieceRef["P"]
-                        temp.append(chesspieces[x][y])
-                    elif piece.piece_type == "B":
-                        pieceRef["B"] = chesspieces[x][y]
-                    elif piece.piece_type == "K":
-                        pieceRef["K"] = chesspieces[x][y]
-                    elif piece.piece_type == "R":
-                        temp = pieceRef["R"]
-                        temp.append(chesspieces[x][y])
-                    elif piece.piece_type == "Q":
-                        pieceRef["Q"] = chesspieces[x][y]
-                    elif piece.piece_type == "K":
-                        pieceRef["K"] = chesspieces[x][y]
+
+                    pieceRef[piece.piece_type].append( chesspieces[x][y] )
 
         return cls(chesspieces, chessboard.white_king_moved, chessboard.black_king_moved, whitePieces, blackPieces)
 
@@ -109,8 +96,8 @@ class Board:
         chess_pieces[1][0] = knightBlack1
         chess_pieces[Board.WIDTH-2][0] = knightBlack2
 
-        whitePieces['K'] = [knightWhite1, knightWhite2]
-        blackPieces['K'] = [knightBlack1, knightBlack2]
+        whitePieces['N'] = [knightWhite1, knightWhite2]
+        blackPieces['N'] = [knightBlack1, knightBlack2]
 
         # Create Bishops.
         bishopWhite1 = pieces.Bishop(2, Board.HEIGHT-1, pieces.Piece.WHITE)

@@ -76,6 +76,8 @@ class Heuristics:
             my_rook_cnt_column = 0
             rival_rook_cnt_column = 0
 
+            
+
             for y in range(8):
                 piece = chess_pieces[x][y]
 
@@ -85,7 +87,7 @@ class Heuristics:
                     if piece.color == currentColor:
                         my_score += piece.value
 
-                        if piece == pieces.Pawn:
+                        if piece.piece_type == pieces.Pawn:
                             # Multiple Pawns in Same Column
                             my_pawn_cnt_column -= 1
 
@@ -101,7 +103,7 @@ class Heuristics:
                             if piece.color == pieces.Piece.BLACK and y > 5:
                                 my_score += (y / 7)
 
-                        if piece == pieces.Knight:
+                        if piece.piece_type == pieces.Knight:
 
                             # Is Knight At Edges
                             if y == 7 or y == 0 or x == 7 or x == 0:
@@ -109,7 +111,7 @@ class Heuristics:
                             elif y == 6 or y == 1 or x == 6 or x == 1:
                                 my_score -= 1
 
-                        if piece == pieces.Rook:
+                        if piece.piece_type == pieces.Rook:
                             # Is Rook At Edges
                             if y == 0 or y == 7 or x == 0 or x == 7:
                                 my_score -= 1
@@ -117,7 +119,25 @@ class Heuristics:
                             # TODO: Is Multiple Rook at Same Column
                             my_rook_cnt_column += 1
 
-                            # TODO: Rook at Open Files or Semi-Open Files
+                            # Open or Semi Open File
+                            file_situation = "open"
+                            for file_index in range(y, 0, -1):
+                                
+                                currentpiece = chess_pieces[x][file_index]
+
+                                if currentpiece.piece_type == pieces.Piece.Pawn and currentpiece.color == currentColor:
+                                    file_situation = "closed"
+                                    break
+                                elif currentpiece.piece_type == pieces.Piece.Pawn and currentpiece.color != currentColor:
+                                    file_situation = "semi-open"
+                                else:
+                                    continue
+
+                            if file_situation == "open":
+                                myscore += 0.75
+                            elif file_situation == "semi-open":
+                                myscore += 0.5
+
 
                     else:
                         rival_score += piece.value

@@ -10,8 +10,8 @@ middle_squares = [[4,4], [4,5], [5,4], [5,5]]
 
 edges = [[0,0], [0,7], [7,0,], [7,7]]
 
-def evaluation_current_color(piece, chess_pieces, x, y, currentcolor, my_pieces, rival_pieces, my_pawn_cnt_column):
-    my_score += piece.value
+def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_pieces, rival_pieces, my_pawn_cnt_column):
+    my_score = piece.value
 
     if piece.piece_type == "P":
         # Multiple Pawns in Same Column
@@ -116,9 +116,6 @@ def evaluation_current_color(piece, chess_pieces, x, y, currentcolor, my_pieces,
         if y == 0 or y == 7 or x == 0 or x == 7:
             my_score -= 0.25
 
-        # Is Multiple Rook at Same Column
-        my_rook_cnt_column += 1
-
         rooks = my_pieces.get("R")
 
         for rook in rooks:
@@ -154,8 +151,8 @@ def evaluation_current_color(piece, chess_pieces, x, y, currentcolor, my_pieces,
         pass
     return my_score
 
-def evaluation_current_color(piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces, rival_pawn_cnt_column):
-    rival_score += piece.value
+def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces, rival_pawn_cnt_column):
+    rival_score = piece.value
 
     if piece == "P":
         # Multiple Pawns in Same Column
@@ -240,14 +237,14 @@ def evaluation_current_color(piece, chess_pieces, x, y, rivalcolor, my_pieces, r
         #TODO: Is Bishop Paired With Other Bishop
 
         #Does Bishop in the Same Diagonal With Rival King
-        rivalking = my_pieces.get("K")[0]
+        myking = my_pieces.get("K")[0]
         moves = piece.get_possible_diagonal_moves(board)
         
         min = 7
 
         for move in moves:
-            xdif = abs(rivalking.x - move.xto)
-            ydif = abs(rivalking.y - move.yto)
+            xdif = abs(myking.x - move.xto)
+            ydif = abs(myking.y - move.yto)
 
             if xdif + ydif < min:
                 min = xdif + ydif
@@ -260,16 +257,12 @@ def evaluation_current_color(piece, chess_pieces, x, y, rivalcolor, my_pieces, r
         if y == 0 or y == 7 or x == 0 or x == 7:
             rival_score -= 0.25
 
-        # Is Multiple Rook at Same Column
-        my_rook_cnt_column += 1
-
-        rooks = my_pieces.get("R")
+        rooks = rival_pieces.get("R")
 
         for rook in rooks:
             if rook is not piece and rook != 0:
                 if rook.x == piece.x or rook.y == piece.y:
                     rival_score += 0.125
-
 
         # Open or Semi Open File
         file_situation = "open"
@@ -299,3 +292,58 @@ def evaluation_current_color(piece, chess_pieces, x, y, rivalcolor, my_pieces, r
         pass
     
     return rival_score
+
+PAWN_TABLE = numpy.array([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [5, 10, 10, -20, -20, 10, 10, 5],
+    [5, -5, -10, 0, 0, -10, -5, 5],
+    [0, 0, 0, 20, 20, 0, 0, 0],
+    [5, 5, 10, 25, 25, 10, 5, 5],
+    [10, 10, 20, 30, 30, 20, 10, 10],
+    [50, 50, 50, 50, 50, 50, 50, 50],
+    [0, 0, 0, 0, 0, 0, 0, 0]
+])
+
+KNIGHT_TABLE = numpy.array([
+    [-50, -40, -30, -30, -30, -30, -40, -50],
+    [-40, -20, 0, 5, 5, 0, -20, -40],
+    [-30, 5, 10, 15, 15, 10, 5, -30],
+    [-30, 0, 15, 20, 20, 15, 0, -30],
+    [-30, 5, 15, 20, 20, 15, 0, -30],
+    [-30, 0, 10, 15, 15, 10, 0, -30],
+    [-40, -20, 0, 0, 0, 0, -20, -40],
+    [-50, -40, -30, -30, -30, -30, -40, -50]
+])
+
+BISHOP_TABLE = numpy.array([
+    [-20, -10, -10, -10, -10, -10, -10, -20],
+    [-10, 5, 0, 0, 0, 0, 5, -10],
+    [-10, 10, 10, 10, 10, 10, 10, -10],
+    [-10, 0, 10, 10, 10, 10, 0, -10],
+    [-10, 5, 5, 10, 10, 5, 5, -10],
+    [-10, 0, 5, 10, 10, 5, 0, -10],
+    [-10, 0, 0, 0, 0, 0, 0, -10],
+    [-20, -10, -10, -10, -10, -10, -10, -20]
+])
+
+ROOK_TABLE = numpy.array([
+    [0, 0, 0, 5, 5, 0, 0, 0],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [5, 10, 10, 10, 10, 10, 10, 5],
+    [0, 0, 0, 0, 0, 0, 0, 0]
+])
+
+QUEEN_TABLE = numpy.array([
+    [-20, -10, -10, -5, -5, -10, -10, -20],
+    [-10, 0, 5, 0, 0, 0, 0, -10],
+    [-10, 5, 5, 5, 5, 5, 0, -10],
+    [0, 0, 5, 5, 5, 5, 0, -5],
+    [-5, 0, 5, 5, 5, 5, 0, -5],
+    [-10, 0, 5, 5, 5, 5, 0, -10],
+    [-10, 0, 0, 0, 0, 0, 0, -10],
+    [-20, -10, -10, -5, -5, -10, -10, -20]
+])

@@ -60,27 +60,11 @@ def letter_to_xpos(letter):
         return 7
 
     raise ValueError("Invalid letter.")
-
-
-def updateSquare():
-    #Update one of the black square
-    #Update one of the white square
-
-    redX = random.randint(0,7)
-    redY = random.randint(0,7)
-
-    blueX = random.randint(0,7)
-    blueY = random.randint(0,7)
-
-    #color the expected numbers
-
 #
 # Entry point.
 #
 board = board.Board.new()
 print(board.to_string())
-
-turnNumber = 0
 
 #TODO: Take Color As Input
 # color = input("Your Color: ")
@@ -91,10 +75,7 @@ botColor = pieces.Piece.flipColor(userColor)
 
 while True:
 
-    turnNumber += 1
-
-    if turnNumber % 5 == 0:
-        updateSquare()
+    isValidMove = True
 
     move = get_valid_user_move(board, userColor)
     if (move == 0):
@@ -104,21 +85,32 @@ while True:
         else:
             print("Stalemate.")
             break
+    
+    copyboard = board.clone(board)
 
-    board.perform_move(move)
+    copyboard.perform_move(move)
 
-    print("User move: " + move.to_string())
-    print(board.to_string())
+    if copyboard.is_check(userColor):
+        print("Invalid movement for King, perform another move")
+        isValidMove = False
+    
+    if isValidMove:
+        board.perform_move(move)
 
-    ai_move = ai.AI.get_ai_move(board, [], botColor)
-    if (ai_move == 0):
-        if (board.is_check(botColor)):
-            print("Checkmate. White wins.")
-            break
-        else:
-            print("Stalemate.")
-            break
+        print("User move: " + move.to_string())
+        print(board.to_string())
 
-    board.perform_move(ai_move)
-    print("AI move: " + ai_move.to_string())
-    print(board.to_string())
+        ai_move = ai.AI.get_ai_move(board, [], botColor)
+        if (ai_move == 0):
+            if (board.is_check(botColor)):
+                print("Checkmate. White wins.")
+                break
+            else:
+                print("Stalemate.")
+                break
+
+        board.perform_move(ai_move)
+        print("AI move: " + ai_move.to_string())
+        print(board.to_string())
+    
+    del copyboard

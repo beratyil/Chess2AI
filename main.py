@@ -1,6 +1,6 @@
 import board, pieces, ai
 import random
-
+import sys
 # Returns a move object based on the users input. Does not check if the move is valid.
 def get_user_move():
     print("Example Move: A2 A4")
@@ -26,18 +26,28 @@ def get_valid_user_move(board, userColor):
         # No possible moves
         if (not possible_moves):
             return 0
+        
+        is_checked = []
 
         for possible_move in possible_moves:
             if (move.equals(possible_move)):
                 move.castling_move = possible_move.castling_move
                 valid = True
-                break
+                # break
 
-        if (valid):
+            copyboard = board.clone(board)
+            copyboard.perform_move(possible_move)
+            is_checked.append(copyboard.is_check(userColor))
+
+        if False not in is_checked:
+            print("Checkmate. Black Wins")
+            sys.exit(0)
+
+        if valid:
             break
         else:
             print("Invalid move.")
-    return move
+    return move, possible_moves
 
 # Converts a letter (A-H) to the x position on the chess board.
 def letter_to_xpos(letter):
@@ -77,7 +87,7 @@ while True:
 
     isValidMove = True
 
-    move = get_valid_user_move(board, userColor)
+    move, possible_moves = get_valid_user_move(board, userColor)
     if (move == 0):
         if (board.is_check(userColor)):
             print("Checkmate. Black Wins.")
@@ -93,6 +103,19 @@ while True:
     if copyboard.is_check(userColor):
         print("Invalid movement for King, perform another move")
         isValidMove = False
+
+        # ischecked = False
+        # for possible_move in possible_moves:
+        #     copyboard = board.clone(board)
+        #     copyboard.perform_move(possible_move)
+        #     ischecked = copyboard.is_check(userColor)
+
+        #     if not ischecked:
+        #         break
+
+        # if ischecked:
+        #     print("Checkmate. Black Wins.")
+        #     break
     
     if isValidMove:
         board.perform_move(move)

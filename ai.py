@@ -3,6 +3,14 @@ import numpy
 import board
 import pieces
 
+main_diagonal_1 = [[0,7], [1,6], [2,5], [3,4], [4,3], [5,2],[1,6],[7,0]]
+main_diagonal_2 = [[0,0], [1,1], [2,2], [3,3], [4,4], [5,5],[6,6],[7,7]]
+
+middle_squares = [[4,4], [4,5], [5,4], [5,5]]
+
+edges = [[0,0], [0,7], [7,0,], [7,7]]
+
+
 
 class Heuristics:
     # The tables denote the points scored for the position of the chess pieces on the board.
@@ -63,11 +71,20 @@ class Heuristics:
     ])
 
     def new_evaluation_function(board, currentColor):
-        # if there is more than one pawn => -1, if there are more than two pawn => -2
         my_score = 0
         rival_score = 0
 
         chess_pieces = board.chesspiece
+
+        my_pieces = None
+        rival_pieces = None
+
+        if currentColor == pieces.Piece.WHITE:
+            my_pieces = board.whitePieces
+            rival_pieces = board.blackPieces
+        else:
+            my_pieces = board.blackPieces
+            rival_pieces = board.whitePieces
 
         for x in range(8):
             my_pawn_cnt_column = 0
@@ -75,8 +92,6 @@ class Heuristics:
 
             my_rook_cnt_column = 0
             rival_rook_cnt_column = 0
-
-            
 
             for y in range(8):
                 piece = chess_pieces[x][y]
@@ -92,7 +107,7 @@ class Heuristics:
                             my_pawn_cnt_column -= 1
 
                             # Is Pawn in Middle
-                            if (x == 4 or y == 4) or (x == 4 or y == 5) or (x == 5 or y == 4) or (x == 5 or y == 5):
+                            if [x,y] in middle_squares:
                                 my_score += 0.5
 
                             # TODO: Is Pawn Isolated
@@ -103,7 +118,7 @@ class Heuristics:
                             if piece.color == pieces.Piece.BLACK and y > 5:
                                 my_score += (y / 7)
 
-                        if piece.piece_type == pieces.Knight:
+                        elif piece.piece_type == pieces.Knight:
 
                             # Is Knight At Edges
                             if y == 7 or y == 0 or x == 7 or x == 0:
@@ -111,13 +126,69 @@ class Heuristics:
                             elif y == 6 or y == 1 or x == 6 or x == 1:
                                 my_score -= 1
 
-                        if piece.piece_type == pieces.Rook:
+                            # Is Knight at Outposts While Protected By a Pawn
+                            if y < 4:
+                                leftcolumnProtected = 0
+                                rightcolumnProtected = 0
+
+                                if x != 0:
+                                    leftcolumnProtected = chess_pieces[x-1][row]
+                                if x != 7:
+                                    rightcolumnProtected = chess_pieces[x + 1][row]
+
+                                if leftcolumnProtected is not 0 and \
+                                   leftcolumnProtected.piece_type == "P" and \
+                                   leftcolumnProtected.color is currentColor or \
+                                   rightcolumnProtected is not 0 and \
+                                   rightcolumnProtected.piece_type == "P" and \
+                                   rightcolumnProtected.color is currentColor:
+                                
+                                    is_found_pawn = False
+                                    for row in range(y,0,-1):
+                                        
+                                        leftcolumn = 0
+                                        rightcolumn = 0
+
+                                        if x != 0:
+                                            leftcolumn = chess_pieces[x-1][row]
+                                        if x != 7:
+                                            rightcolumn = chess_pieces[x + 1][row]
+
+                                        if leftcolumn is not 0:
+                                            if leftcolumn.piece_type == "P" and leftcolumn.color != currentColor:
+                                                is_found_pawn = True
+                                                break
+                                        if rightcolumn is not 0:
+                                            if leftcolumn.piece_type == "P" and leftcolumn.color != currentColor:
+                                                is_found_pawn = True
+                                                break
+                                    
+                                    if not is_found_pawn:
+                                        my_score += 1
+
+                        elif piece.type == "B":
+                            #Is Bishop at a Major Diagonal
+                            if [x,y] in main_diagonal_1 or [x,y] in main_diagonal_2:
+                                my_score += 0.5
+
+                            #TODO: Is Bishop Paired With Other Bishop
+                            continue
+
+                        elif piece.piece_type == pieces.Rook:
                             # Is Rook At Edges
                             if y == 0 or y == 7 or x == 0 or x == 7:
-                                my_score -= 1
+                                my_score -= 0.25
 
-                            # TODO: Is Multiple Rook at Same Column
+                            # Is Multiple Rook at Same Column
                             my_rook_cnt_column += 1
+
+                            rooks = my_pieces.get("R")
+
+                            for rook in rooks:
+                                if rook is not piece and rook is not 0:
+                                    if rook.x == piece.x or rook.y == piece.y:
+                                        my_score += 0.125
+
 
                             # Open or Semi Open File
                             file_situation = "open"
@@ -137,6 +208,16 @@ class Heuristics:
                                 myscore += 0.75
                             elif file_situation == "semi-open":
                                 myscore += 0.5
+
+                        elif piece.type == "Q":
+                            continue
+
+                        else:
+                            # Weakness of pawns near king
+
+
+                            continue
+                            
 
 
                     else:

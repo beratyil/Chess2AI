@@ -1,0 +1,17 @@
+control piece information members.✓
+
+update piece information after every perform_move()√
+
+Look for king is dead right after checking user input, √
+    if user cannot move king, then take another input 
+
+if bot checks, look at all the possible moves to save King, √
+    if found, do it 
+    else, game over.
+
+
+complete is pawn isolated √
+
+copy the evaluation function for AI color
+
+test the game

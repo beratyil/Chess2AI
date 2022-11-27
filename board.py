@@ -119,11 +119,11 @@ class Board:
         chess_pieces[4][0] = pieces.King(4, 0, pieces.Piece.BLACK)
         chess_pieces[3][0] = pieces.Queen(3, 0, pieces.Piece.BLACK)
 
-        whitePieces['Q'] = chess_pieces[3][Board.HEIGHT-1]
-        blackPieces['Q'] = chess_pieces[3][0]
+        whitePieces['Q'] = [chess_pieces[3][Board.HEIGHT-1]]
+        blackPieces['Q'] = [chess_pieces[3][0]]
 
-        whitePieces['K'] = chess_pieces[4][Board.HEIGHT-1]
-        blackPieces['K'] = chess_pieces[3][0]
+        whitePieces['K'] = [chess_pieces[4][Board.HEIGHT-1]]
+        blackPieces['K'] = [chess_pieces[3][0]]
 
         return cls(chess_pieces, False, False, whitePieces, blackPieces)
 

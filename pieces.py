@@ -122,7 +122,7 @@ class Piece():
 class Rook(Piece):
 
     PIECE_TYPE = "R"
-    VALUE = 500
+    VALUE = 5
 
     def __init__(self, x, y, color):
         super(Rook, self).__init__(x, y, color, Rook.PIECE_TYPE, Rook.VALUE)
@@ -137,7 +137,7 @@ class Rook(Piece):
 class Knight(Piece):
 
     PIECE_TYPE = "N"
-    VALUE = 320
+    VALUE = 3
 
     def __init__(self, x, y, color):
         super(Knight, self).__init__(x, y, color, Knight.PIECE_TYPE, Knight.VALUE)
@@ -163,7 +163,7 @@ class Knight(Piece):
 class Bishop(Piece):
 
     PIECE_TYPE = "B"
-    VALUE = 330
+    VALUE = 3
 
     def __init__(self, x, y, color):
         super(Bishop, self).__init__(x, y, color, Bishop.PIECE_TYPE, Bishop.VALUE)
@@ -178,7 +178,7 @@ class Bishop(Piece):
 class Queen(Piece):
 
     PIECE_TYPE = "Q"
-    VALUE = 900
+    VALUE = 9
 
     def __init__(self, x, y, color):
         super(Queen, self).__init__(x, y, color, Queen.PIECE_TYPE, Queen.VALUE)
@@ -195,7 +195,7 @@ class Queen(Piece):
 class King(Piece):
 
     PIECE_TYPE = "K"
-    VALUE = 20000
+    VALUE = 2000
 
     def __init__(self, x, y, color):
         super(King, self).__init__(x, y, color, King.PIECE_TYPE, King.VALUE)
@@ -253,7 +253,7 @@ class King(Piece):
 class Pawn(Piece):
 
     PIECE_TYPE = "P"
-    VALUE = 100
+    VALUE = 1
 
     def __init__(self, x, y, color):
         super(Pawn, self).__init__(x, y, color, Pawn.PIECE_TYPE, Pawn.VALUE)

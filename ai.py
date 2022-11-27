@@ -11,7 +11,6 @@ middle_squares = [[4,4], [4,5], [5,4], [5,5]]
 edges = [[0,0], [0,7], [7,0,], [7,7]]
 
 
-
 class Heuristics:
     # The tables denote the points scored for the position of the chess pieces on the board.
 
@@ -172,7 +171,22 @@ class Heuristics:
                                 my_score += 0.5
 
                             #TODO: Is Bishop Paired With Other Bishop
-                            continue
+
+                            #Does Bishop in the Same Diagonal With Rival King
+                            rivalking = rival_pieces.get("King")
+                            moves = piece.get_possible_diagonal_moves()
+                            
+                            min = 7
+
+                            for move in moves:
+                                xdif = abs(rivalking.x - move.xto)
+                                ydif = abs(rivalking.y - move.yto)
+
+                                if xdif + ydif < min:
+                                    min = xdif + ydif
+
+                            if min < 3:
+                                my_score += 0.8
 
                         elif piece.piece_type == pieces.Rook:
                             # Is Rook At Edges

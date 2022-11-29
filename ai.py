@@ -19,6 +19,7 @@ class Heuristics:
         my_score = 0
         rival_score = 0
         
+        currentColor = pieces.Piece.WHITE
         rivalcolor = pieces.Piece.flipColor(currentColor)
 
         chess_pieces = board.chess_pieces

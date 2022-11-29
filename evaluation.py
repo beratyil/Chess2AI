@@ -66,27 +66,28 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
                 rightcolumnProtected.color == currentcolor:
             
                 is_found_pawn = False
-                for row in range(y,0,-1):
+                if y != 0:
+                    for row in range(y-1,-1,-1):
+                        
+                        leftcolumn = 0
+                        rightcolumn = 0
+
+                        if x != 0:
+                            leftcolumn = chess_pieces[x-1][row]
+                        if x != 7:
+                            rightcolumn = chess_pieces[x + 1][row]
+
+                        if leftcolumn != 0:
+                            if leftcolumn.piece_type == "P" and leftcolumn.color != currentcolor:
+                                is_found_pawn = True
+                                break
+                        if rightcolumn != 0:
+                            if rightcolumn.piece_type == "P" and rightcolumn.color != currentcolor:
+                                is_found_pawn = True
+                                break
                     
-                    leftcolumn = 0
-                    rightcolumn = 0
-
-                    if x != 0:
-                        leftcolumn = chess_pieces[x-1][row]
-                    if x != 7:
-                        rightcolumn = chess_pieces[x + 1][row]
-
-                    if leftcolumn != 0:
-                        if leftcolumn.piece_type == "P" and leftcolumn.color != currentcolor:
-                            is_found_pawn = True
-                            break
-                    if rightcolumn != 0:
-                        if rightcolumn.piece_type == "P" and rightcolumn.color != currentcolor:
-                            is_found_pawn = True
-                            break
-                
-                if not is_found_pawn:
-                    my_score += 1
+                    if not is_found_pawn:
+                        my_score += 1
 
     elif piece.piece_type == "B":
         #Is Bishop at a Major Diagonal
@@ -126,7 +127,7 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
 
         # Open or Semi Open File
         file_situation = "open"
-        for file_index in range(y, 0, -1):
+        for file_index in range(0, 8):
             
             currentpiece = chess_pieces[x][file_index]
 
@@ -207,27 +208,28 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
                 rightcolumnProtected.color == rivalcolor:
             
                 is_found_pawn = False
-                for row in range(y,0,-1):
+                if y != 7:
+                    for row in range(y+1, 8):
+                        
+                        leftcolumn = 0
+                        rightcolumn = 0
+
+                        if x != 0:
+                            leftcolumn = chess_pieces[x-1][row]
+                        if x != 7:
+                            rightcolumn = chess_pieces[x + 1][row]
+
+                        if leftcolumn != 0:
+                            if leftcolumn.piece_type == "P" and leftcolumn.color != rivalcolor:
+                                is_found_pawn = True
+                                break
+                        if rightcolumn != 0:
+                            if rightcolumn.piece_type == "P" and rightcolumn.color != rivalcolor:
+                                is_found_pawn = True
+                                break
                     
-                    leftcolumn = 0
-                    rightcolumn = 0
-
-                    if x != 0:
-                        leftcolumn = chess_pieces[x-1][row]
-                    if x != 7:
-                        rightcolumn = chess_pieces[x + 1][row]
-
-                    if leftcolumn != 0:
-                        if leftcolumn.piece_type == "P" and leftcolumn.color != rivalcolor:
-                            is_found_pawn = True
-                            break
-                    if rightcolumn != 0:
-                        if rightcolumn.piece_type == "P" and rightcolumn.color != rivalcolor:
-                            is_found_pawn = True
-                            break
-                
-                if not is_found_pawn:
-                    rival_score += 1
+                    if not is_found_pawn:
+                        rival_score += 1
 
     elif piece.piece_type == "B":
         #Is Bishop at a Major Diagonal
@@ -266,7 +268,7 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
 
         # Open or Semi Open File
         file_situation = "open"
-        for file_index in range(y, 0, -1):
+        for file_index in range(0, 8):
             
             currentpiece = chess_pieces[x][file_index]
 

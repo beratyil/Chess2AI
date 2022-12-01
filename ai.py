@@ -3,12 +3,12 @@ import numpy
 import board
 import pieces
 
-main_diagonal_1 = [[0,7], [1,6], [2,5], [3,4], [4,3], [5,2],[1,6],[7,0]]
-main_diagonal_2 = [[0,0], [1,1], [2,2], [3,3], [4,4], [5,5],[6,6],[7,7]]
+main_diagonal_1 = [[0, 7], [1, 6], [2, 5], [3, 4], [4, 3], [5, 2], [1, 6], [7, 0]]
+main_diagonal_2 = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]]
 
-middle_squares = [[4,4], [4,5], [5,4], [5,5]]
+middle_squares = [[4, 4], [4, 5], [5, 4], [5, 5]]
 
-edges = [[0,0], [0,7], [7,0,], [7,7]]
+edges = [[0, 0], [0, 7], [7, 0, ], [7, 7]]
 
 
 class Heuristics:
@@ -106,7 +106,7 @@ class Heuristics:
                             my_pawn_cnt_column -= 1
 
                             # Is Pawn in Middle
-                            if [x,y] in middle_squares:
+                            if [x, y] in middle_squares:
                                 my_score += 0.5
 
                             # TODO: Is Pawn Isolated
@@ -131,25 +131,25 @@ class Heuristics:
                                 rightcolumnProtected = 0
 
                                 if x != 0:
-                                    leftcolumnProtected = chess_pieces[x-1][row]
+                                    leftcolumnProtected = chess_pieces[x - 1][row]
                                 if x != 7:
                                     rightcolumnProtected = chess_pieces[x + 1][row]
 
                                 if leftcolumnProtected is not 0 and \
-                                   leftcolumnProtected.piece_type == "P" and \
-                                   leftcolumnProtected.color is currentColor or \
-                                   rightcolumnProtected is not 0 and \
-                                   rightcolumnProtected.piece_type == "P" and \
-                                   rightcolumnProtected.color is currentColor:
-                                
+                                        leftcolumnProtected.piece_type == "P" and \
+                                        leftcolumnProtected.color is currentColor or \
+                                        rightcolumnProtected is not 0 and \
+                                        rightcolumnProtected.piece_type == "P" and \
+                                        rightcolumnProtected.color is currentColor:
+
                                     is_found_pawn = False
-                                    for row in range(y,0,-1):
-                                        
+                                    for row in range(y, 0, -1):
+
                                         leftcolumn = 0
                                         rightcolumn = 0
 
                                         if x != 0:
-                                            leftcolumn = chess_pieces[x-1][row]
+                                            leftcolumn = chess_pieces[x - 1][row]
                                         if x != 7:
                                             rightcolumn = chess_pieces[x + 1][row]
 
@@ -161,21 +161,21 @@ class Heuristics:
                                             if leftcolumn.piece_type == "P" and leftcolumn.color != currentColor:
                                                 is_found_pawn = True
                                                 break
-                                    
+
                                     if not is_found_pawn:
                                         my_score += 1
 
                         elif piece.type == "B":
-                            #Is Bishop at a Major Diagonal
-                            if [x,y] in main_diagonal_1 or [x,y] in main_diagonal_2:
+                            # Is Bishop at a Major Diagonal
+                            if [x, y] in main_diagonal_1 or [x, y] in main_diagonal_2:
                                 my_score += 0.5
 
-                            #TODO: Is Bishop Paired With Other Bishop
+                            # TODO: Is Bishop Paired With Other Bishop
 
-                            #Does Bishop in the Same Diagonal With Rival King
+                            # Does Bishop in the Same Diagonal With Rival King
                             rivalking = rival_pieces.get("King")
                             moves = piece.get_possible_diagonal_moves()
-                            
+
                             min = 7
 
                             for move in moves:
@@ -203,11 +203,10 @@ class Heuristics:
                                     if rook.x == piece.x or rook.y == piece.y:
                                         my_score += 0.125
 
-
                             # Open or Semi Open File
                             file_situation = "open"
                             for file_index in range(y, 0, -1):
-                                
+
                                 currentpiece = chess_pieces[x][file_index]
 
                                 if currentpiece.piece_type == pieces.Piece.Pawn and currentpiece.color == currentColor:
@@ -219,9 +218,9 @@ class Heuristics:
                                     continue
 
                             if file_situation == "open":
-                                myscore += 0.75
+                                my_score += 0.75
                             elif file_situation == "semi-open":
-                                myscore += 0.5
+                                my_score += 0.5
 
                         elif piece.type == "Q":
                             continue
@@ -229,9 +228,8 @@ class Heuristics:
                         else:
                             # Weakness of pawns near king
 
-
                             continue
-                            
+
 
 
                     else:

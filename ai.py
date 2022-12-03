@@ -45,10 +45,10 @@ class Heuristics:
 
                     if piece.color == currentColor:
 
-                        my_score = evaluation.evaluation_current_color(board, piece, chess_pieces, x, y, currentColor, my_pieces, rival_pieces, my_pawn_cnt_column)
+                        my_score += evaluation.evaluation_current_color(board, piece, chess_pieces, x, y, currentColor, my_pieces, rival_pieces, my_pawn_cnt_column)
 
                     else:
-                        rival_score = evaluation.evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces, rival_pawn_cnt_column)
+                        rival_score += evaluation.evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces, rival_pawn_cnt_column)
 
 
             # if multiple pawn in the same column

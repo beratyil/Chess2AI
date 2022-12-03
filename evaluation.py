@@ -98,25 +98,28 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
 
         #Does Bishop in the Same Diagonal With Rival King
         rivalking = rival_pieces.get("K")[0]
-        moves = piece.get_possible_diagonal_moves(board)
-        
-        min = 7
 
-        for move in moves:
-            xdif = abs(rivalking.x - move.xto)
-            ydif = abs(rivalking.y - move.yto)
+        if rivalking != 0:
+            moves = piece.get_possible_diagonal_moves(board)
+            
+            min = 7
 
-            if xdif + ydif < min:
-                min = xdif + ydif
+            for move in moves:
+                xdif = abs(rivalking.x - move.xto)
+                ydif = abs(rivalking.y - move.yto)
 
-        if min < 3:
-            my_score += 0.8
+                if xdif + ydif < min:
+                    min = xdif + ydif
+
+            if min < 3:
+                my_score += 0.8
 
     elif piece.piece_type == "R":
         # Is Rook At Edges
         if y == 0 or y == 7 or x == 0 or x == 7:
             my_score -= 0.25
-
+        
+        # Are Rooks At Same Row or Column
         rooks = my_pieces.get("R")
 
         for rook in rooks:
@@ -155,7 +158,7 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
 def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces, rival_pawn_cnt_column):
     rival_score = piece.value
 
-    if piece == "P":
+    if piece.piece_type == "P":
         # Multiple Pawns in Same Column
         rival_pawn_cnt_column -= 1
 
@@ -240,25 +243,28 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
 
         #Does Bishop in the Same Diagonal With Rival King
         myking = my_pieces.get("K")[0]
-        moves = piece.get_possible_diagonal_moves(board)
-        
-        min = 7
 
-        for move in moves:
-            xdif = abs(myking.x - move.xto)
-            ydif = abs(myking.y - move.yto)
+        if myking != 0:
+            moves = piece.get_possible_diagonal_moves(board)
+            
+            min = 7
 
-            if xdif + ydif < min:
-                min = xdif + ydif
+            for move in moves:
+                xdif = abs(myking.x - move.xto)
+                ydif = abs(myking.y - move.yto)
 
-        if min < 3:
-            rival_score += 0.8
+                if xdif + ydif < min:
+                    min = xdif + ydif
+
+            if min < 3:
+                rival_score += 0.8
 
     elif piece.piece_type == "R":
         # Is Rook At Edges
         if y == 0 or y == 7 or x == 0 or x == 7:
             rival_score -= 0.25
 
+        # Are Rooks At Same Row or Column
         rooks = rival_pieces.get("R")
 
         for rook in rooks:

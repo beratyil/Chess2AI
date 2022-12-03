@@ -1,6 +1,13 @@
 import pieces, ai
-import copy
-import ujson
+
+piece_numbers = {
+    "P": 8,
+    "N": 2,
+    "B": 2,
+    "R": 2,
+    "Q": 1,
+    "K": 1,
+}
 class Board:
 
     WIDTH = 8
@@ -46,6 +53,13 @@ class Board:
                         pieceRef = blackPieces
 
                     pieceRef[piece.piece_type].append( chess_pieces[x][y] )
+                    
+        piecesOnBoard = [whitePieces, blackPieces]
+        for pieceRef in piecesOnBoard:
+            piece_keys = piece_numbers.keys()
+            for piece_key in piece_keys:
+                if len(pieceRef[piece_key]) < piece_numbers.get(piece_key):
+                    pieceRef[piece_key].append( 0 )
 
         return cls(chess_pieces, chessboard.white_king_moved, chessboard.black_king_moved, whitePieces, blackPieces)
 

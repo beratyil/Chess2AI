@@ -22,7 +22,6 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
             my_score += 0.5
 
         # Is Pawn Isolated
-        
         if y < 4:
             leftcolumnprotected = None
             rightcolumnprotected = None

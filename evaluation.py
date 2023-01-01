@@ -3,14 +3,16 @@ import numpy
 import board
 import pieces
 
-main_diagonal_1 = [[0,7], [1,6], [2,5], [3,4], [4,3], [5,2],[1,6],[7,0]]
-main_diagonal_2 = [[0,0], [1,1], [2,2], [3,3], [4,4], [5,5],[6,6],[7,7]]
+main_diagonal_1 = [[0, 7], [1, 6], [2, 5], [3, 4], [4, 3], [5, 2], [1, 6], [7, 0]]
+main_diagonal_2 = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]]
 
-middle_squares = [[4,4], [4,5], [5,4], [5,5]]
+middle_squares = [[4, 4], [4, 5], [5, 4], [5, 5]]
 
-edges = [[0,0], [0,7], [7,0,], [7,7]]
+edges = [[0, 0], [0, 7], [7, 0, ], [7, 7]]
 
-def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_pieces, rival_pieces, my_pawn_cnt_column):
+
+def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_pieces, rival_pieces,
+                             my_pawn_cnt_column):
     my_score = piece.value
 
     if piece.piece_type == "P":
@@ -18,7 +20,7 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
         my_pawn_cnt_column -= 1
 
         # Is Pawn in Middle
-        if [x,y] in middle_squares:
+        if [x, y] in middle_squares:
             my_score += 0.5
 
         # Is Pawn Isolated
@@ -26,7 +28,7 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
             leftcolumnprotected = None
             rightcolumnprotected = None
             if x > 0:
-                leftcolumnprotected = chess_pieces[x-1][y-1]
+                leftcolumnprotected = chess_pieces[x - 1][y - 1]
             if x < 7:
                 rightcolumnprotected = chess_pieces[x + 1][y - 1]
 
@@ -53,26 +55,26 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
             rightcolumnProtected = 0
 
             if x != 0:
-                leftcolumnProtected = chess_pieces[x-1][y+1]
+                leftcolumnProtected = chess_pieces[x - 1][y + 1]
             if x != 7:
-                rightcolumnProtected = chess_pieces[x + 1][y+1]
+                rightcolumnProtected = chess_pieces[x + 1][y + 1]
 
             if leftcolumnProtected != 0 and \
-                leftcolumnProtected.piece_type == "P" and \
-                leftcolumnProtected.color == currentcolor or \
-                rightcolumnProtected != 0 and \
-                rightcolumnProtected.piece_type == "P" and \
-                rightcolumnProtected.color == currentcolor:
-            
+                    leftcolumnProtected.piece_type == "P" and \
+                    leftcolumnProtected.color == currentcolor or \
+                    rightcolumnProtected != 0 and \
+                    rightcolumnProtected.piece_type == "P" and \
+                    rightcolumnProtected.color == currentcolor:
+
                 is_found_pawn = False
                 if y != 0:
-                    for row in range(y-1,-1,-1):
-                        
+                    for row in range(y - 1, -1, -1):
+
                         leftcolumn = 0
                         rightcolumn = 0
 
                         if x != 0:
-                            leftcolumn = chess_pieces[x-1][row]
+                            leftcolumn = chess_pieces[x - 1][row]
                         if x != 7:
                             rightcolumn = chess_pieces[x + 1][row]
 
@@ -84,23 +86,23 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
                             if rightcolumn.piece_type == "P" and rightcolumn.color != currentcolor:
                                 is_found_pawn = True
                                 break
-                    
+
                     if not is_found_pawn:
                         my_score += 1
 
     elif piece.piece_type == "B":
-        #Is Bishop at a Major Diagonal
-        if [x,y] in main_diagonal_1 or [x,y] in main_diagonal_2:
+        # Is Bishop at a Major Diagonal
+        if [x, y] in main_diagonal_1 or [x, y] in main_diagonal_2:
             my_score += 0.5
 
-        #TODO: Is Bishop Paired With Other Bishop
+        # TODO: Is Bishop Paired With Other Bishop
 
-        #Does Bishop in the Same Diagonal With Rival King
+        # Does Bishop in the Same Diagonal With Rival King
         rivalking = rival_pieces.get("K")[0]
 
         if rivalking != 0:
             moves = piece.get_possible_diagonal_moves(board)
-            
+
             min = 7
 
             for move in moves:
@@ -117,7 +119,7 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
         # Is Rook At Edges
         if y == 0 or y == 7 or x == 0 or x == 7:
             my_score -= 0.25
-        
+
         # Are Rooks At Same Row or Column
         rooks = my_pieces.get("R")
 
@@ -126,11 +128,10 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
                 if rook.x == piece.x or rook.y == piece.y:
                     my_score += 0.125
 
-
         # Open or Semi Open File
         file_situation = "open"
         for file_index in range(0, 8):
-            
+
             currentpiece = chess_pieces[x][file_index]
 
             if currentpiece != 0:
@@ -154,7 +155,9 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
         pass
     return my_score
 
-def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces, rival_pawn_cnt_column):
+
+def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_pieces, rival_pieces,
+                           rival_pawn_cnt_column):
     rival_score = piece.value
 
     if piece.piece_type == "P":
@@ -162,16 +165,16 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
         rival_pawn_cnt_column -= 1
 
         # Is Pawn in Middle
-        if [x,y] in middle_squares:
+        if [x, y] in middle_squares:
             rival_score += 0.5
 
         # Is Pawn Isolated
-        
+
         if y > 4:
             leftcolumnprotected = None
             rightcolumnprotected = None
             if x > 0:
-                leftcolumnprotected = chess_pieces[x-1][y-1]
+                leftcolumnprotected = chess_pieces[x - 1][y - 1]
             if x < 7:
                 rightcolumnprotected = chess_pieces[x + 1][y - 1]
 
@@ -198,26 +201,26 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
             rightcolumnProtected = 0
 
             if x != 0:
-                leftcolumnProtected = chess_pieces[x-1][y-1]
+                leftcolumnProtected = chess_pieces[x - 1][y - 1]
             if x != 7:
-                rightcolumnProtected = chess_pieces[x + 1][y-1]
+                rightcolumnProtected = chess_pieces[x + 1][y - 1]
 
             if leftcolumnProtected != 0 and \
-                leftcolumnProtected.piece_type == "P" and \
-                leftcolumnProtected.color == rivalcolor or \
-                rightcolumnProtected != 0 and \
-                rightcolumnProtected.piece_type == "P" and \
-                rightcolumnProtected.color == rivalcolor:
-            
+                    leftcolumnProtected.piece_type == "P" and \
+                    leftcolumnProtected.color == rivalcolor or \
+                    rightcolumnProtected != 0 and \
+                    rightcolumnProtected.piece_type == "P" and \
+                    rightcolumnProtected.color == rivalcolor:
+
                 is_found_pawn = False
                 if y != 7:
-                    for row in range(y+1, 8):
-                        
+                    for row in range(y + 1, 8):
+
                         leftcolumn = 0
                         rightcolumn = 0
 
                         if x != 0:
-                            leftcolumn = chess_pieces[x-1][row]
+                            leftcolumn = chess_pieces[x - 1][row]
                         if x != 7:
                             rightcolumn = chess_pieces[x + 1][row]
 
@@ -229,23 +232,23 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
                             if rightcolumn.piece_type == "P" and rightcolumn.color != rivalcolor:
                                 is_found_pawn = True
                                 break
-                    
+
                     if not is_found_pawn:
                         rival_score += 1
 
     elif piece.piece_type == "B":
-        #Is Bishop at a Major Diagonal
-        if [x,y] in main_diagonal_1 or [x,y] in main_diagonal_2:
+        # Is Bishop at a Major Diagonal
+        if [x, y] in main_diagonal_1 or [x, y] in main_diagonal_2:
             rival_score += 0.5
 
-        #TODO: Is Bishop Paired With Other Bishop
+        # TODO: Is Bishop Paired With Other Bishop
 
-        #Does Bishop in the Same Diagonal With Rival King
+        # Does Bishop in the Same Diagonal With Rival King
         myking = my_pieces.get("K")[0]
 
         if myking != 0:
             moves = piece.get_possible_diagonal_moves(board)
-            
+
             min = 7
 
             for move in moves:
@@ -274,7 +277,7 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
         # Open or Semi Open File
         file_situation = "open"
         for file_index in range(0, 8):
-            
+
             currentpiece = chess_pieces[x][file_index]
 
             if currentpiece != 0:
@@ -297,8 +300,9 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
     else:
         # Weakness of pawns near king
         pass
-    
+
     return rival_score
+
 
 PAWN_TABLE = numpy.array([
     [0, 0, 0, 0, 0, 0, 0, 0],

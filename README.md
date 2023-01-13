@@ -2,17 +2,17 @@
 # Chess AI
 Basic Chess AI written in Python 3. 
 
-Uses the Alpha-Beta algorithm to search for the best move. 
+Uses the Alpha-Beta algorithm to search for the best move. From different than the original repo,
+I have implemented new heuristic functions.
+The reference of most of these heuristic functions are taken from "Programming A Computer For Playing Chess", Claude E. Shannon, 1949.
+
+I have seen some bugs related with Check-Mate and fix them.
+
+In order to make the game faster, I added new functionality to board class.
 
 <img src="./preview.png" width="200" alt="Python Chess AI Program">
 
 ## Getting started
-Chess-2
-
-In every five rounds, a black and a white squares turns into red and blue in random order.
-
-Blue square gives advantages to white
-Red square gives advantages to black
 
 ### Example Moves
 Moves should have the following format:

@@ -62,16 +62,6 @@ class Heuristics:
 
     @staticmethod
     def evaluate(board, currentColor):
-        # material = Heuristics.get_material_score(board)
-
-        # pawns = Heuristics.get_piece_position_score(board, pieces.Pawn.PIECE_TYPE, Heuristics.PAWN_TABLE)
-        # knights = Heuristics.get_piece_position_score(board, pieces.Knight.PIECE_TYPE, Heuristics.KNIGHT_TABLE)
-        # bishops = Heuristics.get_piece_position_score(board, pieces.Bishop.PIECE_TYPE, Heuristics.BISHOP_TABLE)
-        # rooks = Heuristics.get_piece_position_score(board, pieces.Rook.PIECE_TYPE, Heuristics.ROOK_TABLE)
-        # queens = Heuristics.get_piece_position_score(board, pieces.Queen.PIECE_TYPE, Heuristics.QUEEN_TABLE)
-
-        # return material + pawns + knights + bishops + rooks + queens
-
         return Heuristics.new_evaluation_function(board, currentColor)
 
     # Returns the score for the position of the given type of piece.

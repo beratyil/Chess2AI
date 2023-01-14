@@ -1,5 +1,4 @@
 import numpy
-
 import board
 import pieces
 
@@ -33,9 +32,7 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
             if leftcolumnprotected is None or rightcolumnprotected:
                 my_score -= 1
 
-        # TODO:  Weakness of pawns near king
-
-        # TODO: How Close a Pawn to Promoting (Is there any piece in front)
+        # TODO: Check is there any piece can threat
         if piece.color == pieces.Piece.BLACK and y < 3:
             my_score += (y / 7)
 
@@ -92,8 +89,6 @@ def evaluation_current_color(board, piece, chess_pieces, x, y, currentcolor, my_
         #Is Bishop at a Major Diagonal
         if [x,y] in main_diagonal_1 or [x,y] in main_diagonal_2:
             my_score += 0.5
-
-        #TODO: Is Bishop Paired With Other Bishop
 
         #Does Bishop in the Same Diagonal With Rival King
         rivalking = rival_pieces.get("K")[0]
@@ -299,58 +294,3 @@ def evaluation_rival_color(board, piece, chess_pieces, x, y, rivalcolor, my_piec
         pass
     
     return rival_score
-
-PAWN_TABLE = numpy.array([
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [5, 10, 10, -20, -20, 10, 10, 5],
-    [5, -5, -10, 0, 0, -10, -5, 5],
-    [0, 0, 0, 20, 20, 0, 0, 0],
-    [5, 5, 10, 25, 25, 10, 5, 5],
-    [10, 10, 20, 30, 30, 20, 10, 10],
-    [50, 50, 50, 50, 50, 50, 50, 50],
-    [0, 0, 0, 0, 0, 0, 0, 0]
-])
-
-KNIGHT_TABLE = numpy.array([
-    [-50, -40, -30, -30, -30, -30, -40, -50],
-    [-40, -20, 0, 5, 5, 0, -20, -40],
-    [-30, 5, 10, 15, 15, 10, 5, -30],
-    [-30, 0, 15, 20, 20, 15, 0, -30],
-    [-30, 5, 15, 20, 20, 15, 0, -30],
-    [-30, 0, 10, 15, 15, 10, 0, -30],
-    [-40, -20, 0, 0, 0, 0, -20, -40],
-    [-50, -40, -30, -30, -30, -30, -40, -50]
-])
-
-BISHOP_TABLE = numpy.array([
-    [-20, -10, -10, -10, -10, -10, -10, -20],
-    [-10, 5, 0, 0, 0, 0, 5, -10],
-    [-10, 10, 10, 10, 10, 10, 10, -10],
-    [-10, 0, 10, 10, 10, 10, 0, -10],
-    [-10, 5, 5, 10, 10, 5, 5, -10],
-    [-10, 0, 5, 10, 10, 5, 0, -10],
-    [-10, 0, 0, 0, 0, 0, 0, -10],
-    [-20, -10, -10, -10, -10, -10, -10, -20]
-])
-
-ROOK_TABLE = numpy.array([
-    [0, 0, 0, 5, 5, 0, 0, 0],
-    [-5, 0, 0, 0, 0, 0, 0, -5],
-    [-5, 0, 0, 0, 0, 0, 0, -5],
-    [-5, 0, 0, 0, 0, 0, 0, -5],
-    [-5, 0, 0, 0, 0, 0, 0, -5],
-    [-5, 0, 0, 0, 0, 0, 0, -5],
-    [5, 10, 10, 10, 10, 10, 10, 5],
-    [0, 0, 0, 0, 0, 0, 0, 0]
-])
-
-QUEEN_TABLE = numpy.array([
-    [-20, -10, -10, -5, -5, -10, -10, -20],
-    [-10, 0, 5, 0, 0, 0, 0, -10],
-    [-10, 5, 5, 5, 5, 5, 0, -10],
-    [0, 0, 5, 5, 5, 5, 0, -5],
-    [-5, 0, 5, 5, 5, 5, 0, -5],
-    [-10, 0, 5, 5, 5, 5, 0, -10],
-    [-10, 0, 0, 0, 0, 0, 0, -10],
-    [-20, -10, -10, -5, -5, -10, -10, -20]
-])

@@ -103,19 +103,6 @@ while True:
     if copyboard.is_check(userColor):
         print("Invalid movement for King, perform another move")
         isValidMove = False
-
-        # ischecked = False
-        # for possible_move in possible_moves:
-        #     copyboard = board.clone(board)
-        #     copyboard.perform_move(possible_move)
-        #     ischecked = copyboard.is_check(userColor)
-
-        #     if not ischecked:
-        #         break
-
-        # if ischecked:
-        #     print("Checkmate. Black Wins.")
-        #     break
     
     if isValidMove:
         board.perform_move(move)

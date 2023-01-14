@@ -100,6 +100,11 @@ while True:
 
     copyboard.perform_move(move)
 
+    numMovesWhite = len(copyboard.get_possible_moves(pieces.Piece.WHITE))
+    numMovesBlack = len(copyboard.get_possible_moves(pieces.Piece.WHITE))
+
+    print("\nTotal Number of movements for Rival: " + str(numMovesBlack))
+
     if copyboard.is_check(userColor):
         print("Invalid movement for King, perform another move")
         isValidMove = False
@@ -120,6 +125,8 @@ while True:
                 break
 
         board.perform_move(ai_move)
+
+        print("\nTotal Number of movements for User: " + str(numMovesWhite))
         print("AI move: " + ai_move.to_string())
         print(board.to_string())
     
